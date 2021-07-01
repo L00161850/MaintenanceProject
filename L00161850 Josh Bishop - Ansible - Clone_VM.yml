@@ -1,0 +1,33 @@
+# Synopsis: Maintenance and Management Project 
+#	(Ansible Script to automate the deployment of VM's from a template).
+# Description: 
+#	This script when executed will deploy a VM called ONTAP-Select, it will use the template ONTAP-template that is located in
+#	ontap VM folder on vCenter @ 192.168.142.170. Ansible will connect to the vCenter using the specific credentials below.
+# Conclusion:
+#	By using a script coupled with a prepared VM template, a user can use Ansible to deploy a single VM or multiple VM's. This 
+#	will speed up the process of VM deployment and prevent user error by ensuring the same process is executed on every 
+#	template instance.  
+# Example:
+#	Run the below command from the location: ./etc/ansible/playbooks
+#	ansible-playbook deploy_vm.yml
+# Notes: 
+#	User must have a directory under the Ansible directory named playbooks, the user must have this script saved 
+#	in that directory as: ansible-playbook deploy_vm.yml
+---
+- name: Clone VMs
+  hosts: 192.168.142.170
+  connection: local
+  gather_facts: no
+  tasks:
+  - name: clone the template
+    vmware_guest:
+      hostname: 192.168.142.170
+      username: administrator@vsphere.local
+      password: "REDACTED"
+      validate_certs: False
+      name: ONTAP-Select-Josh-Bishop-Create-By-Ansible
+      template: ontap-template-jos-bishop
+      datacenter: Datacenter -Josh Bishop
+      folder: ontap
+      state: poweredoff
+      wait_for_ip_address: no
